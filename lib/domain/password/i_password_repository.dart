@@ -8,12 +8,9 @@ abstract class IPasswordRepository {
 
   Future<void> deletePassword(int id);
 
-  Future<void> changePassword({
-    required int id,
-    String? serviceName,
-    String? nickName,
-    String? passwordId,
-  });
+  Future<void> changePassword(PasswordModel passwordModel);
 
-  Future<IsarCollection<PasswordModel>> getPasswords();
+  Future<List<PasswordModel>> getPasswords();
+
+  Stream<void> watchPasswordChange();
 }

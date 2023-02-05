@@ -17,18 +17,13 @@ class IsarPasswordRepository implements IPasswordRepository {
   }
 
   @override
-  Future<void> changePassword({
-    required int id,
-    String? serviceName,
-    String? nickName,
-    String? passwordId,
-  }) async {
+  Future<void> changePassword(PasswordModel passwordModel) async {
     await isar.writeTxn(() async {
-      final password = await isar.passwordModels.get(id);
+      final password = await isar.passwordModels.get(passwordModel.id);
       if (password != null) {
-        password.serviceName = serviceName ?? password.serviceName;
-        password.nickName = nickName ?? password.nickName;
-        password.passwordId = passwordId ?? password.passwordId;
+        password.serviceName = passwordModel.serviceName;
+        password.nickName = passwordModel.nickName;
+        password.passwordId = passwordModel.passwordId;
 
         await isar.passwordModels.put(password);
       }
@@ -44,7 +39,12 @@ class IsarPasswordRepository implements IPasswordRepository {
   }
 
   @override
-  Future<IsarCollection<PasswordModel>> getPasswords() async {
-    return isar.collection<PasswordModel>();
+  Future<List<PasswordModel>> getPasswords() async {
+    return isar.collection<PasswordModel>().where().findAll();
+  }
+
+  @override
+  Stream<void> watchPasswordChange() {
+    return isar.passwordModels.watchLazy();
   }
 }
