@@ -1,6 +1,10 @@
+import 'package:isar/isar.dart';
 import 'package:test_app/application/auth/auth_bloc.dart';
 import 'package:test_app/domain/index.dart';
+import 'package:test_app/domain/password/i_password_repository.dart';
+import 'package:test_app/domain/password/model/password_model.dart';
 import 'package:test_app/infra/auth/hive_user_repository.dart';
+import 'package:test_app/infra/password/isar_password_repository.dart';
 import 'package:test_app/presentation/create_pin_screen.dart';
 import 'package:test_app/presentation/home_screen.dart';
 import 'package:test_app/presentation/login_screen.dart';
@@ -14,7 +18,10 @@ import 'presentation/splash_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  final isar = await Isar.open([PasswordModelSchema]);
+
   GetIt.I.registerSingleton<IAuthRepository>(HiveAuthRepository());
+  GetIt.I.registerSingleton<IPasswordRepository>(IsarPasswordRepository(isar));
 
   runApp(const MyApp());
 }
