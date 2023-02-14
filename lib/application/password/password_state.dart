@@ -6,10 +6,13 @@ class PasswordState with _$PasswordState {
     required LoadingState status,
     @Default([])
     List<PasswordModel> passwordList,
+    @Default('')
+    String password,
   }) = _PasswordState;
 
   factory PasswordState.initialize() => const PasswordState(
         status: LoadingState.isInitial,
         passwordList: [],
+        password: ''
       );
 }

@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$PasswordState {
   LoadingState get status => throw _privateConstructorUsedError;
   List<PasswordModel> get passwordList => throw _privateConstructorUsedError;
+  String get password => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $PasswordStateCopyWith<PasswordState> get copyWith =>
@@ -30,7 +31,8 @@ abstract class $PasswordStateCopyWith<$Res> {
           PasswordState value, $Res Function(PasswordState) then) =
       _$PasswordStateCopyWithImpl<$Res, PasswordState>;
   @useResult
-  $Res call({LoadingState status, List<PasswordModel> passwordList});
+  $Res call(
+      {LoadingState status, List<PasswordModel> passwordList, String password});
 }
 
 /// @nodoc
@@ -48,6 +50,7 @@ class _$PasswordStateCopyWithImpl<$Res, $Val extends PasswordState>
   $Res call({
     Object? status = null,
     Object? passwordList = null,
+    Object? password = null,
   }) {
     return _then(_value.copyWith(
       status: null == status
@@ -58,6 +61,10 @@ class _$PasswordStateCopyWithImpl<$Res, $Val extends PasswordState>
           ? _value.passwordList
           : passwordList // ignore: cast_nullable_to_non_nullable
               as List<PasswordModel>,
+      password: null == password
+          ? _value.password
+          : password // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -70,7 +77,8 @@ abstract class _$$_PasswordStateCopyWith<$Res>
       __$$_PasswordStateCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({LoadingState status, List<PasswordModel> passwordList});
+  $Res call(
+      {LoadingState status, List<PasswordModel> passwordList, String password});
 }
 
 /// @nodoc
@@ -86,6 +94,7 @@ class __$$_PasswordStateCopyWithImpl<$Res>
   $Res call({
     Object? status = null,
     Object? passwordList = null,
+    Object? password = null,
   }) {
     return _then(_$_PasswordState(
       status: null == status
@@ -96,6 +105,10 @@ class __$$_PasswordStateCopyWithImpl<$Res>
           ? _value._passwordList
           : passwordList // ignore: cast_nullable_to_non_nullable
               as List<PasswordModel>,
+      password: null == password
+          ? _value.password
+          : password // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -104,7 +117,9 @@ class __$$_PasswordStateCopyWithImpl<$Res>
 
 class _$_PasswordState implements _PasswordState {
   const _$_PasswordState(
-      {required this.status, final List<PasswordModel> passwordList = const []})
+      {required this.status,
+      final List<PasswordModel> passwordList = const [],
+      this.password = ''})
       : _passwordList = passwordList;
 
   @override
@@ -119,8 +134,12 @@ class _$_PasswordState implements _PasswordState {
   }
 
   @override
+  @JsonKey()
+  final String password;
+
+  @override
   String toString() {
-    return 'PasswordState(status: $status, passwordList: $passwordList)';
+    return 'PasswordState(status: $status, passwordList: $passwordList, password: $password)';
   }
 
   @override
@@ -130,12 +149,14 @@ class _$_PasswordState implements _PasswordState {
             other is _$_PasswordState &&
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality()
-                .equals(other._passwordList, _passwordList));
+                .equals(other._passwordList, _passwordList) &&
+            (identical(other.password, password) ||
+                other.password == password));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, status, const DeepCollectionEquality().hash(_passwordList));
+  int get hashCode => Object.hash(runtimeType, status,
+      const DeepCollectionEquality().hash(_passwordList), password);
 
   @JsonKey(ignore: true)
   @override
@@ -147,12 +168,15 @@ class _$_PasswordState implements _PasswordState {
 abstract class _PasswordState implements PasswordState {
   const factory _PasswordState(
       {required final LoadingState status,
-      final List<PasswordModel> passwordList}) = _$_PasswordState;
+      final List<PasswordModel> passwordList,
+      final String password}) = _$_PasswordState;
 
   @override
   LoadingState get status;
   @override
   List<PasswordModel> get passwordList;
+  @override
+  String get password;
   @override
   @JsonKey(ignore: true)
   _$$_PasswordStateCopyWith<_$_PasswordState> get copyWith =>

@@ -38,27 +38,41 @@ class _CreatePinState extends State<CreatePinScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     TextFormField(
-                      maxLength: 4,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         hintText: 'CREATE PIN',
                       ),
                       onChanged: (value) => pin = value,
-                      onEditingComplete: () {
-                        if (_formKey.currentState!.validate()) {
-                          context.read<AuthBloc>().add(
-                                CreatePin(pin: pin),
-                              );
-                        }
-                      },
+                      onEditingComplete: () => createPin(pin),
                       validator: (value) {
-                        if ((value == null || value.isEmpty) &&
-                            value!.length < 4) {
-                          return 'Write exactly 4 numbers please';
+                        if ((value == null || value.isEmpty)) {
+                          return 'Write at least something, please :)';
                         }
                         return null;
                       },
-                    )
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    ElevatedButton(
+                      onPressed: () => createPin(pin),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.greenAccent),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                      child: SizedBox(
+                        height: 50,
+                        child: Center(
+                          child: Text('CREATE'),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -67,5 +81,13 @@ class _CreatePinState extends State<CreatePinScreen> {
         }),
       ),
     );
+  }
+
+  void createPin(String pin) {
+    if (_formKey.currentState!.validate()) {
+      context.read<AuthBloc>().add(
+            CreatePin(pin: pin),
+          );
+    }
   }
 }

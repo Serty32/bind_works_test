@@ -1,9 +1,12 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:isar/isar.dart';
 import 'package:test_app/application/auth/auth_bloc.dart';
 import 'package:test_app/domain/index.dart';
 import 'package:test_app/domain/password/i_password_repository.dart';
+import 'package:test_app/domain/password/i_secure_storage.dart';
 import 'package:test_app/domain/password/model/password_model.dart';
 import 'package:test_app/infra/auth/hive_user_repository.dart';
+import 'package:test_app/infra/password/secure_storage.dart';
 import 'package:test_app/infra/password/isar_password_repository.dart';
 import 'package:test_app/presentation/args/detail_args.dart';
 import 'package:test_app/presentation/create_pin_screen.dart';
@@ -25,7 +28,9 @@ void main() async {
 
   GetIt.I.registerSingleton<IAuthRepository>(HiveAuthRepository());
   GetIt.I.registerSingleton<IPasswordRepository>(IsarPasswordRepository(isar));
-
+  GetIt.I.registerSingleton<ISecureStorage>(
+    SecureStorage(const FlutterSecureStorage()),
+  );
   runApp(const MyApp());
 }
 
@@ -70,17 +75,29 @@ class MyApp extends StatelessWidget {
           return BlocProvider<PasswordBloc>(
             create: (context) => PasswordBloc(
               passwordRepository: GetIt.I<IPasswordRepository>(),
+              secureStorage: GetIt.I<ISecureStorage>(),
             ),
             child: HomeScreen(),
           );
         },
         '/detail': (context) {
-          final args = ModalRoute.of(context)!.settings.arguments as DetailArgs?;
+          final args =
+              ModalRoute.of(context)!.settings.arguments as DetailArgs?;
 
-          return BlocProvider<PasswordBloc>(
-            create: (context) => PasswordBloc(
-              passwordRepository: GetIt.I<IPasswordRepository>(),
-            ),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider<PasswordBloc>(
+                create: (BuildContext context) => PasswordBloc(
+                  passwordRepository: GetIt.I<IPasswordRepository>(),
+                  secureStorage: GetIt.I<ISecureStorage>(),
+                ),
+              ),
+              BlocProvider<AuthBloc>(
+                create: (BuildContext context) => AuthBloc(
+                  authRepository: GetIt.I<IAuthRepository>(),
+                ),
+              ),
+            ],
             child: DetailScreen(
               args: args,
             ),

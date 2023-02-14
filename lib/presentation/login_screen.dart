@@ -30,13 +30,12 @@ class _LoginScreenState extends State<LoginScreen> {
             Navigator.of(context).pushNamedAndRemoveUntil(
                 '/home', (Route<dynamic> route) => false);
           }
-          if(state.status == LoadingState.isError) {
+          if (state.status == LoadingState.isError) {
             ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              const SnackBar(content: Text('Authentication Failure')),
-            );
-            
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                const SnackBar(content: Text('Authentication Failure')),
+              );
           }
         },
         listenWhen: ((previous, current) => previous.status != current.status),
@@ -50,27 +49,41 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     TextFormField(
-                      maxLength: 4,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         hintText: 'LOGIN',
                       ),
                       onChanged: (value) => pin = value,
-                      onEditingComplete: () {
-                        if (_formKey.currentState!.validate()) {
-                          context.read<AuthBloc>().add(
-                                Login(pin: pin),
-                              );
-                        }
-                      },
+                      onEditingComplete: () => login(pin),
                       validator: (value) {
-                        if ((value == null || value.isEmpty) &&
-                            value!.length < 4) {
-                          return 'Write exactly 4 numbers please';
+                        if ((value == null || value.isEmpty)) {
+                          return 'Can\'t be empty :)';
                         }
                         return null;
                       },
-                    )
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    ElevatedButton(
+                      onPressed: () => login(pin),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.greenAccent),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                      child: SizedBox(
+                        height: 50,
+                        child: Center(
+                          child: Text('GO'),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -79,5 +92,13 @@ class _LoginScreenState extends State<LoginScreen> {
         }),
       ),
     );
+  }
+
+  void login(String pin) {
+    if (_formKey.currentState!.validate()) {
+      context.read<AuthBloc>().add(
+            Login(pin: pin),
+          );
+    }
   }
 }

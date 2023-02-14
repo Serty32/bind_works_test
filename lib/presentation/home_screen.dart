@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:test_app/application/auth/auth_bloc.dart';
 import 'package:test_app/application/password/password_bloc.dart';
 import 'package:test_app/domain/index.dart';
 import 'package:test_app/presentation/args/detail_args.dart';
@@ -38,13 +37,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: state.passwordList.length,
                     itemBuilder: ((context, index) {
                       return InkWell(
-                        onTap: () {
-                          print('tappeD');
+                        onTap: () async {
+                          final password = await context
+                                  .read<PasswordBloc>()
+                                  .getPassword(
+                                      state.passwordList[index].passwordId) ??
+                              '';
+                          if (!mounted) return;
                           Navigator.of(context).pushNamed(
                             '/detail',
-                            arguments: DetailArgs(
-                              state.passwordList[index],
-                            ),
+                            arguments:
+                                DetailArgs(state.passwordList[index], password),
                           );
                         },
                         child: ListTile(
@@ -59,19 +62,19 @@ class _HomeScreenState extends State<HomeScreen> {
             onRefresh: () {
               return Future.delayed(Duration(seconds: 1), () {
                 context.read<PasswordBloc>().add(GetPasswords());
-                setState(() {});
               });
             },
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
-          tooltip: 'Add',
-          onPressed: () {
-            Navigator.of(context).pushNamed(
-              '/detail',
-            );
-          }),
+        child: Icon(Icons.add),
+        onPressed: () {
+          Navigator.of(context).pushNamed(
+            '/detail',
+          );
+        },
+      ),
     );
   }
 }

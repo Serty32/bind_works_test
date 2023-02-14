@@ -1,4 +1,3 @@
-import 'package:dartz/dartz.dart';
 import 'package:isar/isar.dart';
 
 import 'package:test_app/domain/password/i_password_repository.dart';
@@ -15,27 +14,27 @@ class IsarPasswordRepository implements IPasswordRepository {
       await isar.passwordModels.put(passwordModel);
     });
   }
-
   @override
   Future<void> changePassword(PasswordModel passwordModel) async {
     await isar.writeTxn(() async {
-      final password = await isar.passwordModels.get(passwordModel.id);
-      if (password != null) {
-        password.serviceName = passwordModel.serviceName;
-        password.nickName = passwordModel.nickName;
-        password.passwordId = passwordModel.passwordId;
+      final oldPasswordModel = await isar.passwordModels.get(passwordModel.id);
+      if (oldPasswordModel != null) {
+        oldPasswordModel.serviceName = passwordModel.serviceName;
+        oldPasswordModel.nickName = passwordModel.nickName;
+        oldPasswordModel.passwordId = passwordModel.passwordId;
 
-        await isar.passwordModels.put(password);
+        await isar.passwordModels.put(oldPasswordModel);
       }
     });
   }
 
   @override
-  Future<void> deletePassword(int id) async {
+  Future<bool> deletePassword(int id) async {
     await isar.writeTxn(() async {
       final isDeleted = await isar.passwordModels.delete(id);
-      print('Recipe deleted: $isDeleted');
+      return isDeleted;
     });
+    return false;
   }
 
   @override
